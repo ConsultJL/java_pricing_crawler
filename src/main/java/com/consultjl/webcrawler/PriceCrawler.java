@@ -39,7 +39,6 @@ public class PriceCrawler implements Crawler {
      */
     private final XpathConfig xpathConfig;
 
-
     /**
      * @param browserConfig BrowserConfig class which holds all configuration information for browser
      * @param xpathConfig XpathConfig class which holds all xpaths for a given crawler

@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"com.consultjl.webcrawler","l":"BrowserConfig"},{"p":"com.consultjl.webcrawler","l":"Crawler"},{"p":"com.consultjl.webcrawler","l":"PriceCrawler"},{"p":"com.consultjl.webcrawler","l":"WebcrawlerApplication"},{"p":"com.consultjl.webcrawler","l":"XpathConfig"}]
