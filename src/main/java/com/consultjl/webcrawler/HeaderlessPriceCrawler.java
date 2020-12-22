@@ -111,7 +111,6 @@ public class HeaderlessPriceCrawler implements Crawler {
         // Direct the browser to visit the defined URL
         url = crawlerHooks.beforeVisit(url);
         if (url.startsWith("file://")) {
-            System.out.println("Found cache at "+url.substring(7));
             this.browser.open(new File(url.substring(7)));
         } else {
             this.browser.visit(url);

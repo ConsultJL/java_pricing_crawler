@@ -39,21 +39,24 @@ public class PriceCrawlerHooks implements CrawlerHooks {
 
     @Override
     public String beforeVisit(String url) {
-        String cacheName = md5String(url)+".html";
-        File cacheFile = new File("cache/"+cacheName);
-        if (cacheFile.exists()) {
-            Path file = Paths.get("cache/"+cacheName);
-            try {
-                BasicFileAttributes attr =
-                        Files.readAttributes(file, BasicFileAttributes.class);
-                // Cache the file for 5 minutes
-                if ((System.currentTimeMillis()-attr.lastModifiedTime().toMillis()) > 300000) {
+        // We do not want to cache files that are trying to be accessed
+        if (!url.startsWith("file://")) {
+            String cacheName = md5String(url) + ".html";
+            File cacheFile = new File("cache/" + cacheName);
+            if (cacheFile.exists()) {
+                Path file = Paths.get("cache/" + cacheName);
+                try {
+                    BasicFileAttributes attr =
+                            Files.readAttributes(file, BasicFileAttributes.class);
+                    // Cache the file for 5 minutes
+                    if ((System.currentTimeMillis() - attr.lastModifiedTime().toMillis()) > 300000) {
+                        return url;
+                    }
+                } catch (IOException e) {
                     return url;
                 }
-            } catch (IOException e) {
-                return url;
+                return "file://" + cacheFile.getAbsolutePath();
             }
-            return "file://"+cacheFile.getAbsolutePath();
         }
         return url;
     }
