@@ -1,11 +1,16 @@
 package com.consultjl.webcrawler;
 
+import com.consultjl.webcrawler.saveResult.CsvResultSave;
+import com.consultjl.webcrawler.saveResult.JsonResultSave;
+import com.consultjl.webcrawler.saveResult.SaveResult;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.jauntium.Browser;
 import com.jauntium.Element;
 import com.jauntium.Elements;
 import com.jauntium.NotFound;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.json.Json;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,8 +39,7 @@ public class HeaderlessPriceCrawler implements Crawler {
 
     private PriceCrawlerHooks crawlerHooks = new PriceCrawlerHooks();
 
-    // @TODO: Autowire with Qualifer
-    private CsvResultSave csvResultSave = new CsvResultSave();
+    private SaveResult saveResult = new CsvResultSave();
 
     /**
      * BrowserConfig from application.properties
@@ -146,9 +150,8 @@ public class HeaderlessPriceCrawler implements Crawler {
             offer = crawlerHooks.afterParseElements(offer);
         }
 
-        csvResultSave.fileName = "Testing.csv";
         try {
-            if (csvResultSave.saveResult(allCrawlData)) {
+            if (saveResult.saveResult(allCrawlData, "Testing")) {
                 System.out.println("Saved");
             } else {
                 System.out.println("Something went wrong");
@@ -158,6 +161,13 @@ public class HeaderlessPriceCrawler implements Crawler {
 //            e.printStackTrace();
             System.out.println("We've detected a failure in writing your results. Below is an export of that data in RAW form.");
             System.out.println(allCrawlData.toString());
+        }
+
+        JsonResultSave jsonResultSave = new JsonResultSave();
+        try {
+            jsonResultSave.saveResult(allCrawlData, "Testing");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         crawlerHooks.beforeBrowserQuit(this.browser);

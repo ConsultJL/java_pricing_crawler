@@ -1,29 +1,27 @@
-package com.consultjl.webcrawler;
+package com.consultjl.webcrawler.saveResult;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class CsvResultSave implements SaveResult{
+public class CsvResultSave implements SaveResult {
     /**
      * showHeader Boolean Show header in CSV
      */
     public Boolean showHeader = true;
-
-    public String fileName = "";
 
     /**
      * @param crawlData Data from the crawler
      * @return Boolean
      */
     @Override
-    public Boolean saveResult(ArrayList<Map<String, String>> crawlData) throws IOException {
+    public Boolean saveResult(ArrayList<Map<String, String>> crawlData, String fileName) throws IOException {
         if (fileName.isEmpty()) {
             return false;
         }
         try {
-            FileWriter csvWriter = new FileWriter(fileName);
+            FileWriter csvWriter = new FileWriter(fileName + ".csv");
             int i = 1;
             if (showHeader) {
                 for (String key : crawlData.get(0).keySet()) {
