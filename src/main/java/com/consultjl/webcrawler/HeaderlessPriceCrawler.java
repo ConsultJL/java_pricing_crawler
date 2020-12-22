@@ -152,6 +152,7 @@ public class HeaderlessPriceCrawler implements Crawler {
                 System.out.println("Saved");
             } else {
                 System.out.println("Something went wrong");
+                System.out.println(allCrawlData.toString());
             }
         } catch (IOException e) {
 //            e.printStackTrace();
