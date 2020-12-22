@@ -11,6 +11,16 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 public class WebcrawlerApplication {
 
 	public static void main(String[] args) {
+		String url = null;
+		String crawlerName = null;
+		if (args.length > 0) {
+			url = args[0];
+			crawlerName = args[1];
+		} else {
+			System.out.println("You must specify both a url and crawlerName when calling this application.");
+			System.out.println("Ex: java webCrawler \"https://www.amazon.com/gp/offer-listing/B086542G1M\" amazon");
+			System.exit(1);
+		}
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
 		context.scan("com.consultjl.webcrawler");
 		context.refresh();
@@ -18,7 +28,7 @@ public class WebcrawlerApplication {
 		XpathConfig xpathConfig = context.getBean(XpathConfig.class);
 
 		PriceCrawler priceCrawler = new PriceCrawler(browserConfig, xpathConfig);
-		priceCrawler.executeCrawler("https://www.amazon.com/gp/offer-listing/B086542G1M", "amazon");
+		priceCrawler.executeCrawler(url, crawlerName);
 
 		context.close();
 	}
