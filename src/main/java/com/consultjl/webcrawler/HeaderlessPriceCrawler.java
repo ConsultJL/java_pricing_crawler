@@ -51,11 +51,52 @@ public class PriceCrawler implements Crawler {
         this.browser = getBrowser();
     }
 
+    @Override
+    public void beforeBrowserSpinUp() {
+
+    }
+
+    @Override
+    public void beforeVisit() {
+
+    }
+
+    @Override
+    public void afterVisit() {
+
+    }
+
+    @Override
+    public void beforeParseOffers() {
+
+    }
+
+    @Override
+    public void afterParseOffers() {
+
+    }
+
+    @Override
+    public void beforeParseElements() {
+
+    }
+
+    @Override
+    public void afterParseElements() {
+
+    }
+
+    @Override
+    public void beforeBrowserQuit() {
+
+    }
+
     /**
      * @return Browser Setups our browser given the defined options
      */
     @Override
     public Browser getBrowser() {
+        beforeBrowserSpinUp();
         // Setup chromedriver and any options we need
         System.out.println("Using chromedriver located at: " + this.chromeDriverPath);
         System.setProperty("webdriver.chrome.driver", this.chromeDriverPath);
@@ -95,16 +136,21 @@ public class PriceCrawler implements Crawler {
         this.crawlerName = crawlerName;
 
         // Direct the browser to visit the defined URL
+        beforeVisit();
         this.browser.visit(url);
+        afterVisit();
 
         // Load all xpaths from properties
         Map<String, String> crawlerXPaths = getXPaths();
 
         // Get all offers on the page
+        beforeParseOffers();
         Elements offers = this.getOffers(crawlerXPaths.get("offerList"));
+        afterParseOffers();
 
         // Loop through each offer
         for (Element offer : offers) {
+            beforeParseElements();
             try {
                 // Only get information on new offers
                 if (offer.findFirst(crawlerXPaths.get("condition")).getText().equals("New")) {
@@ -129,8 +175,10 @@ public class PriceCrawler implements Crawler {
             } catch (NotFound notFound) {
                 notFound.printStackTrace();
             }
+            afterParseElements();
         }
 
+        beforeBrowserQuit();
         browser.driver.quit();
     }
 }
