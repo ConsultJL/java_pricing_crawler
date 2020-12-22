@@ -163,16 +163,8 @@ public class HeaderlessPriceCrawler implements Crawler {
                 System.out.println(allCrawlData.toString());
             }
         } catch (IOException e) {
-//            e.printStackTrace();
             System.out.println("We've detected a failure in writing your results. Below is an export of that data in RAW form.");
             System.out.println(allCrawlData.toString());
-        }
-
-        JsonResultSave jsonResultSave = new JsonResultSave();
-        try {
-            jsonResultSave.saveResult(allCrawlData, "Testing");
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
         crawlerHooks.beforeBrowserQuit(this.browser);
