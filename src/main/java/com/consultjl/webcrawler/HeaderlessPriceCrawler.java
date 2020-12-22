@@ -7,12 +7,14 @@ import com.jauntium.NotFound;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Pricing Crawler Implementation
  */
-public class PriceCrawler implements Crawler {
+public class HeaderlessPriceCrawler implements Crawler {
 
     /**
      * crawlerName used to define which xpaths to select
@@ -29,10 +31,15 @@ public class PriceCrawler implements Crawler {
      */
     public Boolean useHeadless;
 
+    private PriceCrawlerHooks crawlerHooks = new PriceCrawlerHooks();
+
+    // @TODO: Autowire with Qualifer
+    private CsvResultSave csvResultSave = new CsvResultSave();
+
     /**
      * BrowserConfig from application.properties
      */
-    private final Browser browser;
+    private Browser browser;
 
     /**
      * XpathConfig from application.properties
@@ -43,7 +50,7 @@ public class PriceCrawler implements Crawler {
      * @param browserConfig BrowserConfig class which holds all configuration information for browser
      * @param xpathConfig XpathConfig class which holds all xpaths for a given crawler
      */
-    public PriceCrawler(BrowserConfig browserConfig, XpathConfig xpathConfig) {
+    public HeaderlessPriceCrawler(BrowserConfig browserConfig, XpathConfig xpathConfig) {
         // Set all of our variables properly
         this.chromeDriverPath = browserConfig.chromeDriverPath;
         this.useHeadless = browserConfig.useHeadless;
@@ -51,52 +58,11 @@ public class PriceCrawler implements Crawler {
         this.browser = getBrowser();
     }
 
-    @Override
-    public void beforeBrowserSpinUp() {
-
-    }
-
-    @Override
-    public void beforeVisit() {
-
-    }
-
-    @Override
-    public void afterVisit() {
-
-    }
-
-    @Override
-    public void beforeParseOffers() {
-
-    }
-
-    @Override
-    public void afterParseOffers() {
-
-    }
-
-    @Override
-    public void beforeParseElements() {
-
-    }
-
-    @Override
-    public void afterParseElements() {
-
-    }
-
-    @Override
-    public void beforeBrowserQuit() {
-
-    }
-
     /**
      * @return Browser Setups our browser given the defined options
      */
     @Override
     public Browser getBrowser() {
-        beforeBrowserSpinUp();
         // Setup chromedriver and any options we need
         System.out.println("Using chromedriver located at: " + this.chromeDriverPath);
         System.setProperty("webdriver.chrome.driver", this.chromeDriverPath);
@@ -104,6 +70,7 @@ public class PriceCrawler implements Crawler {
         if (this.useHeadless) {
             options.addArguments("--headless");
         }
+        options = crawlerHooks.beforeBrowserSpinUp(options);
         return new Browser(new ChromeDriver(options));
     }
 
@@ -136,21 +103,21 @@ public class PriceCrawler implements Crawler {
         this.crawlerName = crawlerName;
 
         // Direct the browser to visit the defined URL
-        beforeVisit();
+        crawlerHooks.beforeVisit(url);
         this.browser.visit(url);
-        afterVisit();
+        this.browser = crawlerHooks.afterVisit(this.browser);
 
         // Load all xpaths from properties
         Map<String, String> crawlerXPaths = getXPaths();
 
         // Get all offers on the page
-        beforeParseOffers();
         Elements offers = this.getOffers(crawlerXPaths.get("offerList"));
-        afterParseOffers();
+        offers = crawlerHooks.afterParseOffers(offers);
 
+        ArrayList<Map<String, String>> allCrawlData = new ArrayList<>();
         // Loop through each offer
         for (Element offer : offers) {
-            beforeParseElements();
+            offer = crawlerHooks.beforeParseElements(offer);
             try {
                 // Only get information on new offers
                 if (offer.findFirst(crawlerXPaths.get("condition")).getText().equals("New")) {
@@ -165,20 +132,27 @@ public class PriceCrawler implements Crawler {
                         seller = "Amazon";
                     }
 
-                    // Output what we found
-                    System.out.println("-------- Amazon Offer ----------");
-                    System.out.format("Price: %s\n", price);
-                    System.out.format("Condition: %s\n", condition);
-                    System.out.format("Seller: %s\n", seller);
-                    System.out.println("--------------------------------");
+                    HashMap<String, String> crawlData = new HashMap<String, String>();
+                    crawlData.put("price", price);
+                    crawlData.put("condition", condition);
+                    crawlData.put("seller", seller);
+                    crawlData = crawlerHooks.beforeDataSave(crawlData);
+                    allCrawlData.add(crawlData);
                 }
             } catch (NotFound notFound) {
                 notFound.printStackTrace();
             }
-            afterParseElements();
+            offer = crawlerHooks.afterParseElements(offer);
         }
 
-        beforeBrowserQuit();
-        browser.driver.quit();
+        csvResultSave.fileName = "Testing.csv";
+        if(csvResultSave.saveResult(allCrawlData)) {
+            System.out.println("Saved");
+        } else {
+            System.out.println("Something went wrong");
+        }
+
+        crawlerHooks.beforeBrowserQuit(this.browser);
+        this.browser.driver.quit();
     }
 }

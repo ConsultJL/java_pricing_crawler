@@ -27,8 +27,8 @@ public class WebcrawlerApplication {
 		BrowserConfig browserConfig = context.getBean(BrowserConfig.class);
 		XpathConfig xpathConfig = context.getBean(XpathConfig.class);
 
-		PriceCrawler priceCrawler = new PriceCrawler(browserConfig, xpathConfig);
-		priceCrawler.executeCrawler(url, crawlerName);
+		HeaderlessPriceCrawler headerlessPriceCrawler = new HeaderlessPriceCrawler(browserConfig, xpathConfig);
+		headerlessPriceCrawler.executeCrawler(url, crawlerName);
 
 		context.close();
 	}
