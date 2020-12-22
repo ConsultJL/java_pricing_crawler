@@ -11,7 +11,7 @@ public interface Crawler {
 
     public Map<String, String> getXPaths();
 
-    public Elements getOffers();
+    public Elements getOffers(String offerXpath);
 
     public void executeCrawler(String url, String crawlerName);
 }

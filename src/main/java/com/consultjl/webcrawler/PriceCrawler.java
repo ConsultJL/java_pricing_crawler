@@ -41,8 +41,8 @@ public class PriceCrawler implements Crawler {
     }
 
     @Override
-    public Elements getOffers() {
-        return this.browser.doc.findEvery("<div class=olpOffer>");
+    public Elements getOffers(String offerXpath) {
+        return this.browser.doc.findEvery(offerXpath);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class PriceCrawler implements Crawler {
         this.crawlerName = crawlerName;
 
         Map<String, String> crawlerXPaths = getXPaths();
-        Elements offers = this.getOffers();
+        Elements offers = this.getOffers(crawlerXPaths.get("offerList"));
 
         // Loop through each offer
         for (Element offer : offers) {
