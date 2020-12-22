@@ -6,6 +6,9 @@ import org.springframework.context.annotation.PropertySource;
 
 import java.util.Map;
 
+/**
+ * Get all xpaths from properties file and define them in a variable for later use
+ */
 @Configuration
 @PropertySource("classpath:application.properties")
 public class XpathConfig {

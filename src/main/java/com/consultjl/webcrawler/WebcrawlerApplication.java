@@ -3,11 +3,14 @@ package com.consultjl.webcrawler;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+/**
+ * A web crawler which is based on collecting pricing information. This crawler is configurable by defining xpaths in
+ * application.properties
+ */
 @SpringBootApplication
 public class WebcrawlerApplication {
 
 	public static void main(String[] args) {
-//		SpringApplication.run(WebcrawlerApplication.class, args);
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
 		context.scan("com.consultjl.webcrawler");
 		context.refresh();
