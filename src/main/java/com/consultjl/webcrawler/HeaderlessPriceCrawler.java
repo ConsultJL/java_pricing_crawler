@@ -12,6 +12,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.json.Json;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -108,8 +109,13 @@ public class HeaderlessPriceCrawler implements Crawler {
         this.crawlerName = crawlerName;
 
         // Direct the browser to visit the defined URL
-        crawlerHooks.beforeVisit(url);
-        this.browser.visit(url);
+        url = crawlerHooks.beforeVisit(url);
+        if (url.startsWith("file://")) {
+            System.out.println("Found cache at "+url.substring(7));
+            this.browser.open(new File(url.substring(7)));
+        } else {
+            this.browser.visit(url);
+        }
         this.browser = crawlerHooks.afterVisit(this.browser);
 
         // Load all xpaths from properties
