@@ -11,14 +11,17 @@ public class CsvResultSave implements SaveResult{
      */
     public Boolean showHeader = true;
 
-    public String fileName;
+    public String fileName = "";
 
     /**
      * @param crawlData Data from the crawler
      * @return Boolean
      */
     @Override
-    public Boolean saveResult(ArrayList<Map<String, String>> crawlData) {
+    public Boolean saveResult(ArrayList<Map<String, String>> crawlData) throws IOException {
+        if (fileName.isEmpty()) {
+            return false;
+        }
         try {
             FileWriter csvWriter = new FileWriter(fileName);
             int i = 1;
@@ -47,7 +50,7 @@ public class CsvResultSave implements SaveResult{
             csvWriter.close();
             return true;
         } catch (IOException e) {
-            return false;
+            throw e;
         }
     }
 }

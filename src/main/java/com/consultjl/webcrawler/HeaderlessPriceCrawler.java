@@ -7,6 +7,7 @@ import com.jauntium.NotFound;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -146,10 +147,16 @@ public class HeaderlessPriceCrawler implements Crawler {
         }
 
         csvResultSave.fileName = "Testing.csv";
-        if(csvResultSave.saveResult(allCrawlData)) {
-            System.out.println("Saved");
-        } else {
-            System.out.println("Something went wrong");
+        try {
+            if (csvResultSave.saveResult(allCrawlData)) {
+                System.out.println("Saved");
+            } else {
+                System.out.println("Something went wrong");
+            }
+        } catch (IOException e) {
+//            e.printStackTrace();
+            System.out.println("We've detected a failure in writing your results. Below is an export of that data in RAW form.");
+            System.out.println(allCrawlData.toString());
         }
 
         crawlerHooks.beforeBrowserQuit(this.browser);
