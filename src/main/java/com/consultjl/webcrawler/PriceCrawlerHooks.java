@@ -7,7 +7,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -18,7 +17,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
-import java.util.Scanner;
 
 public class PriceCrawlerHooks implements CrawlerHooks {
 
