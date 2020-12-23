@@ -12,7 +12,7 @@ import java.util.Map;
 @Configuration
 @PropertySource("classpath:application.properties")
 public class XpathConfig {
-    @Value("#{${xpaths}}")
-    public Map<String, Map<String, String>> xpaths;
+//    @Value("#{${xpaths}}")
+//    public Map<String, Map<String, String>> xpaths;
 }
 

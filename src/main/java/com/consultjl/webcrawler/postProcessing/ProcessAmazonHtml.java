@@ -14,9 +14,9 @@ public class ProcessAmazonHtml implements PostProcessing {
 
     @Override
     public ArrayList<Map<String, String>> postProcess(String html) {
-        HashMap<String, String> crawlData = null;
         Document doc = Jsoup.parse(html);
         ArrayList<Map<String, String>> allCrawlData = new ArrayList<>();
+        HashMap<String, String> crawlData = null;
 
         try {
             Elements offers = doc.select("div.olpOffer");

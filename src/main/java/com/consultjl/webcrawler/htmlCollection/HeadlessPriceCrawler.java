@@ -11,7 +11,7 @@ import java.io.File;
 /**
  * Pricing Crawler Implementation
  */
-public class HeaderlessPriceCrawler implements Crawler {
+public class HeadlessPriceCrawler implements Crawler {
     /**
      * Used for storing the path to the chromedriver defined in properties
      */
@@ -33,7 +33,7 @@ public class HeaderlessPriceCrawler implements Crawler {
      * @param browserConfig BrowserConfig class which holds all configuration information for browser
      * @param xpathConfig XpathConfig class which holds all xpaths for a given crawler
      */
-    public HeaderlessPriceCrawler(BrowserConfig browserConfig, XpathConfig xpathConfig) {
+    public HeadlessPriceCrawler(BrowserConfig browserConfig) {
         // Set all of our variables properly
         this.chromeDriverPath = browserConfig.chromeDriverPath;
         this.useHeadless = browserConfig.useHeadless;
@@ -73,9 +73,11 @@ public class HeaderlessPriceCrawler implements Crawler {
 
         String html = browser.getSource();
 
+        return html;
+    }
+
+    public void cleanUp() {
         crawlerHooks.beforeBrowserQuit(this.browser);
         this.browser.driver.quit();
-
-        return html;
     }
 }

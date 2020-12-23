@@ -2,6 +2,7 @@ package com.consultjl.webcrawler;
 
 import com.consultjl.webcrawler.postProcessing.PostProcessing;
 import com.consultjl.webcrawler.postProcessing.ProcessAmazonHtml;
+import com.consultjl.webcrawler.postProcessing.ProcessSiteMapXML;
 import com.consultjl.webcrawler.saveResult.CsvResultSave;
 import com.consultjl.webcrawler.saveResult.JsonResultSave;
 import com.consultjl.webcrawler.saveResult.Saveable;
@@ -19,6 +20,8 @@ public class AppConfig {
 
     public PostProcessing getProcess() {
         switch(htmlproc) {
+            case "sitemap":
+                return new ProcessSiteMapXML();
             case "amazon":
             default:
                 return new ProcessAmazonHtml();
