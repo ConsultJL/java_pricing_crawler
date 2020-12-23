@@ -1,8 +1,6 @@
-package com.consultjl.webcrawler;
+package com.consultjl.webcrawler.htmlCollection;
 
 import com.jauntium.Browser;
-import com.jauntium.Element;
-import com.jauntium.Elements;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 import javax.xml.bind.DatatypeConverter;
@@ -16,7 +14,6 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
 
 public class PriceCrawlerHooks implements CrawlerHooks {
 
@@ -79,27 +76,7 @@ public class PriceCrawlerHooks implements CrawlerHooks {
     }
 
     @Override
-    public Elements afterParseOffers(Elements offers) {
-        return offers;
-    }
-
-    @Override
-    public Element beforeParseElements(Element offer) {
-        return offer;
-    }
-
-    @Override
-    public Element afterParseElements(Element offer) {
-        return offer;
-    }
-
-    @Override
     public void beforeBrowserQuit(Browser browser) {
 
-    }
-
-    @Override
-    public HashMap<String, String> beforeDataSave(HashMap<String, String> crawlData) {
-        return crawlData;
     }
 }

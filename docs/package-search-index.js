@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"com.consultjl.webcrawler"},{"l":"com.consultjl.webcrawler.saveResult"}]
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"com.consultjl.webcrawler"},{"l":"com.consultjl.webcrawler.htmlCollection"},{"l":"com.consultjl.webcrawler.htmlProcessing"},{"l":"com.consultjl.webcrawler.saveResult"}]

@@ -17,6 +17,9 @@ public class CsvResultSave implements SaveResult {
      */
     @Override
     public Boolean saveResult(ArrayList<Map<String, String>> crawlData, String fileName) throws IOException {
+        if (crawlData.size() == 0) {
+            return false;
+        }
         if (fileName.isEmpty()) {
             return false;
         }

@@ -1,7 +1,16 @@
 package com.consultjl.webcrawler;
 
+import com.consultjl.webcrawler.htmlCollection.HeaderlessPriceCrawler;
+import com.consultjl.webcrawler.htmlProcessing.HtmlProcessor;
+import com.consultjl.webcrawler.htmlProcessing.ProcessAmazonOffer;
+import com.consultjl.webcrawler.saveResult.JsonResultSave;
+import com.consultjl.webcrawler.saveResult.SaveResult;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * A web crawler which is based on collecting pricing information. This crawler is configurable by defining xpaths in
@@ -28,7 +37,23 @@ public class WebcrawlerApplication {
 		XpathConfig xpathConfig = context.getBean(XpathConfig.class);
 
 		HeaderlessPriceCrawler headerlessPriceCrawler = new HeaderlessPriceCrawler(browserConfig, xpathConfig);
-		headerlessPriceCrawler.executeCrawler(url, crawlerName);
+		HtmlProcessor htmlProcessor = new ProcessAmazonOffer(xpathConfig);
+		SaveResult saveResult = new JsonResultSave();
+
+		String html = headerlessPriceCrawler.executeCrawler(url);
+		ArrayList<Map<String, String>> allCrawlData = htmlProcessor.processHtml(html);
+
+		try {
+			if (saveResult.saveResult(allCrawlData, "Testing")) {
+				System.out.println("Saved");
+			} else {
+				System.out.println("Something went wrong");
+				System.out.println(allCrawlData.toString());
+			}
+		} catch (IOException e) {
+			System.out.println("We've detected a failure in writing your results. Below is an export of that data in RAW form.");
+			System.out.println(allCrawlData.toString());
+		}
 
 		context.close();
 	}
