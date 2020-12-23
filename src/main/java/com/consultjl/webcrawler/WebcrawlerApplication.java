@@ -1,10 +1,9 @@
 package com.consultjl.webcrawler;
 
 import com.consultjl.webcrawler.htmlCollection.HeaderlessPriceCrawler;
-import com.consultjl.webcrawler.htmlProcessing.HtmlProcessor;
-import com.consultjl.webcrawler.htmlProcessing.ProcessAmazonOffer;
-import com.consultjl.webcrawler.saveResult.JsonResultSave;
-import com.consultjl.webcrawler.saveResult.SaveResult;
+import com.consultjl.webcrawler.postProcessing.PostProcessing;
+import com.consultjl.webcrawler.saveResult.Saveable;
+
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -33,13 +32,14 @@ public class WebcrawlerApplication {
 		context.refresh();
 		BrowserConfig browserConfig = context.getBean(BrowserConfig.class);
 		XpathConfig xpathConfig = context.getBean(XpathConfig.class);
+		AppConfig appConfig = context.getBean(AppConfig.class);
+
+		PostProcessing postProcessing = appConfig.getProcess();
+		Saveable saveResult = appConfig.getSaveResult();
 
 		HeaderlessPriceCrawler headerlessPriceCrawler = new HeaderlessPriceCrawler(browserConfig, xpathConfig);
-		HtmlProcessor htmlProcessor = new ProcessAmazonOffer(xpathConfig);
-		SaveResult saveResult = new JsonResultSave();
-
 		String html = headerlessPriceCrawler.executeCrawler(url);
-		ArrayList<Map<String, String>> allCrawlData = htmlProcessor.processHtml(html);
+		ArrayList<Map<String, String>> allCrawlData = postProcessing.postProcess(html);
 
 		try {
 			if (saveResult.saveResult(allCrawlData, "Testing")) {

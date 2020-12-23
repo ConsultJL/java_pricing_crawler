@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class CsvResultSave implements SaveResult {
+public class CsvResultSave implements Saveable {
     /**
      * showHeader Boolean Show header in CSV
      */

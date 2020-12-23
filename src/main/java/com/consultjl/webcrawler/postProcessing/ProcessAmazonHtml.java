@@ -1,6 +1,5 @@
-package com.consultjl.webcrawler.htmlProcessing;
+package com.consultjl.webcrawler.postProcessing;
 
-import com.consultjl.webcrawler.XpathConfig;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -10,17 +9,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ProcessAmazonOffer implements HtmlProcessor{
+public class ProcessAmazonHtml implements PostProcessing {
     private String crawlerName = "amazon";
-    private XpathConfig xpathConfig;
-
-    public ProcessAmazonOffer(XpathConfig xpathConfig) {
-        this.xpathConfig = xpathConfig;
-    }
 
     @Override
-    public ArrayList<Map<String, String>> processHtml(String html) {
-        Map<String, String> crawlerXPaths = this.xpathConfig.xpaths.get(this.crawlerName);
+    public ArrayList<Map<String, String>> postProcess(String html) {
         HashMap<String, String> crawlData = null;
         Document doc = Jsoup.parse(html);
         ArrayList<Map<String, String>> allCrawlData = new ArrayList<>();

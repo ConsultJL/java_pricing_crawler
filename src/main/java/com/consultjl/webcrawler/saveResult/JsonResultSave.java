@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class JsonResultSave implements SaveResult {
+public class JsonResultSave implements Saveable {
     @Override
     public Boolean saveResult(ArrayList<Map<String, String>> crawlData, String fileName) throws IOException {
         if (fileName.isEmpty()) {
