@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 /**
- * A web crawler which is based on collecting pricing information. This crawler is configurable by defining xpaths in
+ * A web crawler which is based on collecting pricing information. This crawler is configurable by defining X-Paths in
  * application.properties
  */
 @SpringBootApplication
@@ -21,13 +21,11 @@ public class WebcrawlerApplication {
 
 	public static void main(String[] args) {
 		String url = null;
-		String crawlerName = null;
 		if (args.length > 0) {
 			url = args[0];
-			crawlerName = args[1];
 		} else {
 			System.out.println("You must specify both a url and crawlerName when calling this application.");
-			System.out.println("Ex: java webCrawler \"https://www.amazon.com/gp/offer-listing/B086542G1M\" amazon");
+			System.out.println("Ex: java webCrawler \"https://www.amazon.com/gp/offer-listing/B086542G1M\"");
 			System.exit(1);
 		}
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
