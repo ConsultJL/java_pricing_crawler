@@ -1,8 +1,10 @@
 package com.consultjl.webcrawler;
 
 import com.consultjl.webcrawler.htmlCollection.HeadlessPriceCrawler;
+import com.consultjl.webcrawler.models.Product;
 import com.consultjl.webcrawler.postProcessing.PostProcessing;
 import com.consultjl.webcrawler.postProcessing.ProcessSiteMapXML;
+import me.xdrop.fuzzywuzzy.FuzzySearch;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -11,6 +13,8 @@ public class SiteMapDiscovery {
     private BrowserConfig browserConfig;
     private HeadlessPriceCrawler headlessPriceCrawler;
 
+    public Boolean showSites = false;
+
     public SiteMapDiscovery(BrowserConfig browserConfig) {
         this.browserConfig = browserConfig;
         HeadlessPriceCrawler headlessPriceCrawler = new HeadlessPriceCrawler(browserConfig);
@@ -18,13 +22,15 @@ public class SiteMapDiscovery {
     }
 
     public String findSiteMapURL(String url) {
-        String html = headlessPriceCrawler.executeCrawler(url);
+        String html = headlessPriceCrawler.executeCrawler(url+"/robots.txt");
         if (html.contains("Sitemap:")) {
             String sitemapUrl = html.substring(html.indexOf("Sitemap: ") + 9);
-            sitemapUrl = sitemapUrl.replace("</pre>", "").replace("</body>", "").replace("</html>", "");
-            return sitemapUrl.trim();
+            sitemapUrl = sitemapUrl.replace("</pre>", "").replace("</body>", "").replace("</html>", "").trim();
+            if (sitemapUrl.isBlank() || sitemapUrl.isEmpty()) {
+                return url + "/sitemap.xml";
+            }
         }
-        return "";
+        return url + "/sitemap.xml";
     }
 
     public ArrayList<Map<String, String>> parseSiteMap(String url) {
@@ -34,39 +40,54 @@ public class SiteMapDiscovery {
         return postProcessing.postProcess(siteMapXml);
     }
 
-    public ArrayList<ArrayList> findSiteLinksFromMap(String url) {
-        ArrayList<ArrayList> totalCrawlData = new ArrayList<ArrayList>();
-//        ArrayList<String> urlsToReturn = new ArrayList<>();
-
+    public ArrayList<String> findCategoryFromSiteMap(String url) {
         ArrayList<Map<String, String>> sitemapArr = parseSiteMap(url);
-
-        totalCrawlData.add(sitemapArr);
+        ArrayList<String> urlToReturn = new ArrayList<String>();
 
         for (Map<String, String> crawlData : sitemapArr) {
             String urlToProcess = crawlData.get("loc");
-            if (urlToProcess.endsWith(".xml")) {
-                totalCrawlData.add(findSiteLinksFromMap(urlToProcess));
+//            System.out.println(">> Processing " + urlToProcess);
+            if (urlToProcess.contains(".xml")) {
+                urlToReturn.addAll(findCategoryFromSiteMap(urlToProcess));
+            } else {
+                urlToReturn.add(urlToProcess);
             }
         }
 
-        return totalCrawlData;
+        return urlToReturn;
     }
 
-    public String findCategoryFromSiteMap(String url) {
-        ArrayList<Map<String, String>> sitemapArr = parseSiteMap(url);
+    public void findProductURLs(String brand, String productTitle, String productSku, ArrayList<String> sitesFromLookup, int productMatchPerc) {
+        ArrayList<String> brandSites = new ArrayList<>();
 
-        for (Map<String, String> crawlData : sitemapArr) {
-            String urlToProcess = crawlData.get("loc");
-            System.out.println(">> Processing " + urlToProcess);
-            if (urlToProcess.endsWith(".xml") &&
-                !(urlToProcess.contains("category") || urlToProcess.contains("collection"))) {
-                findCategoryFromSiteMap(urlToProcess);
-            } else {
-                return urlToProcess;
+        for (String site : sitesFromLookup) {
+            if (FuzzySearch.partialRatio(brand.toUpperCase(), site.toUpperCase()) > 75) {
+                if (showSites) {
+                    System.out.println(site);
+                }
+                brandSites.add(site);
             }
         }
 
-        return "";
+        System.out.println(">> Checking " + brandSites.size());
+
+        for (String site: brandSites) {
+            if (FuzzySearch.partialRatio(productTitle.toUpperCase(), site.toUpperCase()) > productMatchPerc) {
+                System.out.println(">> Found Product");
+                System.out.println(">>>For Title: " + productTitle);
+                System.out.println(">>>Site: " + site);
+                System.out.println(">>>Match Precent: " + FuzzySearch.partialRatio(productTitle.toUpperCase(), site.toUpperCase()) + "\r\n");
+            }
+        }
+
+        for (String site: brandSites) {
+            if (FuzzySearch.partialRatio(productSku.toUpperCase(), site.toUpperCase()) > productMatchPerc) {
+                System.out.println(">> Found Product");
+                System.out.println(">>>For SKU: " + productSku);
+                System.out.println(">>>Site: " + site);
+                System.out.println(">>>Match Precent: " + FuzzySearch.partialRatio(productSku.toUpperCase(), site.toUpperCase()) + "\r\n");
+            }
+        }
     }
 
     public void cleanUp() {
