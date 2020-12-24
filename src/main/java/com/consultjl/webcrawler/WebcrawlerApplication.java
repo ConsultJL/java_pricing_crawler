@@ -1,7 +1,9 @@
 package com.consultjl.webcrawler;
 
 import com.consultjl.webcrawler.models.Product;
+import com.consultjl.webcrawler.models.Site;
 import com.consultjl.webcrawler.repositories.ProductRepository;
+import com.consultjl.webcrawler.repositories.SiteRepository;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -24,26 +26,28 @@ public class WebcrawlerApplication {
 		context.refresh();
 		BrowserConfig browserConfig = context.getBean(BrowserConfig.class);
 		ProductRepository productRepository = context.getBean(ProductRepository.class);
+		SiteRepository siteRepository = context.getBean(SiteRepository.class);
 
 		SiteMapDiscovery siteMapDiscovery = new SiteMapDiscovery(browserConfig);
-
 		siteMapDiscovery.showSites = false;
-		String siteMapUrl = siteMapDiscovery.findSiteMapURL(url);
-		System.out.println(">> Processing Site Map: " + siteMapUrl);
-		ArrayList<String> sitesFromLookup = siteMapDiscovery.findCategoryFromSiteMap(siteMapUrl);
 
-		for (Product p : productRepository.findAll()) {
-			String title = p.getTitle();
-			String sku = p.getSku();
+		for (Site s : siteRepository.findAll()) {
+			String siteMapUrl = siteMapDiscovery.findSiteMapURL(s.getUrl());
+			System.out.println(">> Processing Site Map: " + siteMapUrl);
+			ArrayList<String> sitesFromLookup = siteMapDiscovery.findCategoryFromSiteMap(siteMapUrl);
 
-			System.out.println("Starting search...");
-			System.out.println(">>> Brand: " + brand);
-			System.out.println(">>> Title: " + title);
-			System.out.println(">>> SKU: " + sku);
+			for (Product p : productRepository.findAll()) {
+				String title = p.getTitle();
+				String sku = p.getSku();
 
-			siteMapDiscovery.findProductURLs(brand, title, sku, sitesFromLookup, productMatchPerc);
+				System.out.println("Starting search...");
+				System.out.println(">>> Brand: " + brand);
+				System.out.println(">>> Title: " + title);
+				System.out.println(">>> SKU: " + sku);
+
+				siteMapDiscovery.findProductURLs(brand, title, sku, sitesFromLookup, productMatchPerc);
+			}
 		}
-		siteMapDiscovery.cleanUp();
 
 		context.close();
 	}

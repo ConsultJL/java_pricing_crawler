@@ -46,7 +46,6 @@ public class SiteMapDiscovery {
 
         for (Map<String, String> crawlData : sitemapArr) {
             String urlToProcess = crawlData.get("loc");
-//            System.out.println(">> Processing " + urlToProcess);
             if (urlToProcess.contains(".xml")) {
                 urlToReturn.addAll(findCategoryFromSiteMap(urlToProcess));
             } else {
@@ -88,9 +87,5 @@ public class SiteMapDiscovery {
                 System.out.println(">>>Match Precent: " + FuzzySearch.partialRatio(productSku.toUpperCase(), site.toUpperCase()) + "\r\n");
             }
         }
-    }
-
-    public void cleanUp() {
-        headlessPriceCrawler.cleanUp();
     }
 }

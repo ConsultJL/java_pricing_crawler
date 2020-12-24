@@ -3,6 +3,7 @@ package com.consultjl.webcrawler.htmlCollection;
 import com.consultjl.webcrawler.BrowserConfig;
 import com.consultjl.webcrawler.XpathConfig;
 import com.jauntium.Browser;
+import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
@@ -58,7 +59,6 @@ public class HeadlessPriceCrawler implements Crawler {
 
     /**
      * @param url URL of the site to crawl
-     * @param crawlerName The crawler name for looking up xpaths
      */
     @Override
     public String executeCrawler(String url) {
@@ -71,9 +71,7 @@ public class HeadlessPriceCrawler implements Crawler {
         }
         this.browser = crawlerHooks.afterVisit(this.browser);
 
-        String html = browser.getSource();
-
-        return html;
+        return browser.getSource();
     }
 
     public void cleanUp() {
