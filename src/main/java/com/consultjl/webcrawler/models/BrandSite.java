@@ -3,8 +3,8 @@ package com.consultjl.webcrawler.models;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "sites")
-public class Site {
+@Table(name = "brandsites")
+public class BrandSite {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
